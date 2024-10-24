@@ -8,6 +8,7 @@ from rest_framework import status
 
 SIGNUP_USER_URL = reverse('user:signup')
 TOKEN_URL = reverse('user:token')
+PROFILE_URL = reverse('user:profile')
 
 
 def create_user(**params):
@@ -15,6 +16,7 @@ def create_user(**params):
 
 
 class PublicUserApiTests(TestCase):
+    """Test Public User API."""
     def setUp(self):
         self.client = APIClient()
 
@@ -55,7 +57,7 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_token_for_user(self):
+    def test_create_token_for_user_success(self):
         """Test generates token for valid credentials."""
         user_details = {
             'email': 'test@example.com',
@@ -110,3 +112,49 @@ class PublicUserApiTests(TestCase):
         self.assertNotIn('Token', res.data)
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
+
+class PrivateUserApiTests(TestCase):
+    """Test User API that require authentication."""
+
+    def setUp(self):
+        self.user = create_user(
+            email='test@example.com',
+            password='testpass123',
+            name='Test Name',
+        )
+        self.client = APIClient()
+        self.client.force_authenticate(user=self.user)
+
+    def test_retrieve_user_info_success(self):
+        """Test retrieving user info who logged in."""
+        res = self.client.get(PROFILE_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, {'name': self.user.name, 'email': self.user.email})
+
+    def test_update_user_info_success(self):
+        """Test update user info success."""
+        payload = {
+            'name': 'New Jeans', 'password': 'newpassword'
+        }
+        res = self.client.patch(PROFILE_URL, payload)
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.name, payload['name'])
+        self.assertTrue(self.user.check_password(payload['password']))
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_delete_user_success(self):
+        """Test delete user success."""
+        res = self.client.delete(PROFILE_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+
+        user_exists = get_user_model().objects.filter(email=self.user.email).exists()
+        self.assertFalse(user_exists)
+
+    def test_delete_user_fail_when_logout(self):
+        self.client.logout()
+        res = self.client.delete(PROFILE_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)

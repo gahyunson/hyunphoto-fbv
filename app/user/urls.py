@@ -11,4 +11,5 @@ app_name = 'user'
 urlpatterns = [
     path('signup/', views.signup, name='signup'),
     path('token/', views.create_token, name='token'),
+    path('profile/', views.profile, name='profile'),
 ]
