@@ -24,6 +24,7 @@ def signup(request):
         return Response(serializer.data, status.HTTP_201_CREATED)
     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST'])
 def create_token(request):
     serializer = AuthTokenSerializer(data=request.data)
@@ -31,6 +32,7 @@ def create_token(request):
         token, created = Token.objects.get_or_create(user=serializer.validated_data['user'])
         return Response({'Token': token.key}, status.HTTP_201_CREATED)
     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 @authentication_classes([authentication.TokenAuthentication])

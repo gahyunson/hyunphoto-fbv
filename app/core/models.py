@@ -45,3 +45,26 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+
+class Photos(models.Model):
+    """Photo object."""
+    title = models.CharField(max_length=100, null=False)
+    description = models.TextField(max_length=1024)
+    photo_path = models.CharField(max_length=200, null=False, blank=False)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.title
+
+class Prices(models.Model):
+    """Price for each photo size."""
+    photo = models.ForeignKey(Photos, on_delete=models.CASCADE)
+    size = models.CharField(max_length=15) # 35" x 60"
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.size + ' of ' + self.photo.title + 'is $' + self.price

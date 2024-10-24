@@ -41,10 +41,39 @@ class ModelTests(TestCase):
         with self.assertRaises(ValueError):
             get_user_model().objects.create_user('', 'sample123')
 
-    def test_create_superuser(self):
+    def test_create_superuser_successful(self):
+        """Test creating a superuser is successful."""
         user = get_user_model().objects.create_superuser(
             'admin@example.com',
             'admin123'
         )
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_photo_create_successful(self):
+        """Test creating a photo is successful."""
+        title = 'The night'
+        description = 'The night we used to rock.'
+        photo_path = 'static/thenight.png'
+        photos = models.Photos.objects.create(
+            title = title,
+            description = description,
+            photo_path = photo_path
+        )
+        self.assertEqual(str(photos), title)
+
+    def test_price_create_successful(self):
+        """Test creating a price is successful."""
+        photo = models.Photos.objects.create(
+            title = 'The night',
+            description = 'The night we used to rock.',
+            photo_path = 'static/thenight.png'
+        )
+        size = '20x16"'
+        price = 88.0
+        prices = models.Prices.objects.create(
+            photo = photo,
+            size = size,
+            price = price,
+        )
+        self.assertEqual(prices.price, 88.0)
