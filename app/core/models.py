@@ -70,4 +70,9 @@ class Prices(models.Model):
         return self.size + ' of ' + self.photo.title + 'is $' + str(self.price)
 
 
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    photo = models.ForeignKey(Photos, on_delete=models.CASCADE)
+    price = models.ForeignKey(Prices, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
 

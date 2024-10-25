@@ -10,19 +10,12 @@ from rest_framework.decorators import (
 )
 from rest_framework.response import Response
 
-from core.models import Photos, Prices
-from photos import serializers
+from core.models import Cart
+from cart.serializers import CartSerializer
 
 
 @api_view(['GET'])
-def photo_list(request):
-    photos = Photos.objects.all()
-    serializer = serializers.PhotoSerializer(photos, many=True)
-    return Response(serializer.data, status.HTTP_200_OK)
-
-
-@api_view(['GET'])
-def photo_detail(request, photo_id):
-    prices = Prices.objects.filter(photo=photo_id)
-    serializer = serializers.PriceSerializer(prices, many=True)
+def cart_list(request):
+    cart = Cart.objects.filter(user=request.user)
+    serializer = CartSerializer(cart, many=True)
     return Response(serializer.data, status.HTTP_200_OK)
