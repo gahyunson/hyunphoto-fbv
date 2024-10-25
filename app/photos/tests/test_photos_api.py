@@ -17,10 +17,12 @@ from photos import serializers
 
 PHOTOS_URL = reverse('photos:photos-list')
 
-def create_photos(user, **params):
+def detail_url(photo_id):
+    return reverse('photos:photo-detail', args=[photo_id])
+
+
+def create_photos(**params):
     """Create and return a photo sample data."""
-    if not user.is_staff:
-        return None
     sample = {
         'title': 'The night',
         'description': 'The night we used to rock.',
@@ -31,12 +33,23 @@ def create_photos(user, **params):
     photo = Photos.objects.create(**sample)
     return photo
 
+def create_prices(photo, **params):
+    price_sample = {
+        'photo': photo,
+        'size': '20x16"',
+        'price': 86.0
+    }
+    price_sample.update(params)
+
+    price = Prices.objects.create(**price_sample)
+    return price
+
 def create_superuser(**params):
     """Create and return a superuser."""
     return get_user_model().objects.create_superuser(**params)
 
 
-class PublicPhotoApiTests(TestCase):
+class PublicPhotoPriceApiTests(TestCase):
     """Test authenticated API."""
     def setUp(self):
         self.client = APIClient()
@@ -46,9 +59,9 @@ class PublicPhotoApiTests(TestCase):
 
     def test_photos_list(self):
         """Test get a list of photos."""
-        create_photos(user=self.user)
+        create_photos()
         sample = {'title': 'New York City'}
-        create_photos(user=self.user, **sample)
+        create_photos(**sample)
 
         res = self.client.get(PHOTOS_URL)
 
@@ -56,3 +69,19 @@ class PublicPhotoApiTests(TestCase):
         serializer = serializers.PhotoSerializer(photos, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), len(serializer.data))
+
+    def test_price_of_photo_list(self):
+        photo1 = create_photos()
+        create_prices(photo1)
+
+        url = detail_url(photo1.id)
+        res = self.client.get(url)
+
+        price1 = Prices.objects.get(photo=photo1)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(price1.photo, photo1)
+
+
+
+

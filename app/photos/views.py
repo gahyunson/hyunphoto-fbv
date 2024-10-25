@@ -15,8 +15,14 @@ from photos import serializers
 
 
 @api_view(['GET'])
-def photo_view(request):
+def photo_list(request):
     photos = models.Photos.objects.all()
     serializer = serializers.PhotoSerializer(photos, many=True)
     return Response(serializer.data, status.HTTP_200_OK)
 
+
+@api_view(['GET'])
+def photo_detail(request, photo_id):
+    prices = models.Prices.objects.filter(photo=photo_id)
+    serializer = serializers.PriceSerializer(prices, many=True)
+    return Response(serializer.data, status.HTTP_200_OK)

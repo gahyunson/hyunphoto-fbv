@@ -61,10 +61,13 @@ class Photos(models.Model):
 class Prices(models.Model):
     """Price for each photo size."""
     photo = models.ForeignKey(Photos, on_delete=models.CASCADE)
-    size = models.CharField(max_length=15) # 35" x 60"
+    size = models.CharField(max_length=15)
     price = models.DecimalField(decimal_places=2, max_digits=10)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return self.size + ' of ' + self.photo.title + 'is $' + self.price
+        return self.size + ' of ' + self.photo.title + 'is $' + str(self.price)
+
+
+
