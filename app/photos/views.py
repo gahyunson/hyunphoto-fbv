@@ -10,7 +10,13 @@ from rest_framework.decorators import (
 )
 from rest_framework.response import Response
 
+from core import models
+from photos import serializers
+
 
 @api_view(['GET'])
 def photo_view(request):
-    pass
+    photos = models.Photos.objects.all()
+    serializer = serializers.PhotoSerializer(photos, many=True)
+    return Response(serializer.data, status.HTTP_200_OK)
+
