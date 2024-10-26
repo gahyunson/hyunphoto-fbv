@@ -1,4 +1,4 @@
-from unittest.mock import patch
+# from unittest.mock import patch
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -56,22 +56,22 @@ class ModelTests(TestCase):
         description = 'The night we used to rock.'
         photo_path = 'static/thenight.png'
         photos = models.Photos.objects.create(
-            title = title,
-            description = description,
-            photo_path = photo_path
+            title=title,
+            description=description,
+            photo_path=photo_path
         )
         self.assertEqual(str(photos), title)
 
     def test_price_create_successful(self):
         """Test creating a price is successful."""
         photo = models.Photos.objects.create(
-            title = 'The night',
-            description = 'The night we used to rock.',
-            photo_path = 'static/thenight.png'
+            title='The night',
+            description='The night we used to rock.',
+            photo_path='static/thenight.png'
         )
         size = '20x16"'
         price = 88.0
-        prices = models.Prices.objects.create(photo = photo,
-                                              size = size,
-                                              price = price)
+        prices = models.Prices.objects.create(photo=photo,
+                                              size=size,
+                                              price=price)
         self.assertEqual(prices.price, 88.0)

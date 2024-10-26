@@ -150,7 +150,8 @@ class PrivateUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
 
-        user_exists = get_user_model().objects.filter(email=self.user.email)
+        User = get_user_model()
+        user_exists = User.objects.filter(email=self.user.email)
         self.assertFalse(user_exists.exists())
 
     def test_delete_user_fail_when_logout(self):
