@@ -67,10 +67,13 @@ class PrivateCartApiTests(TestCase):
 
     def test_cart_list_success(self):
         create_cart(self.user)
-        user2 = create_user(**{'email': 'user2@example.com',
-                            'password': 'user2123',
-                            'name': 'User Two'}
-                            )
+        user2 = create_user(
+            **{
+                'email': 'user2@example.com',
+                'password': 'user2123',
+                'name': 'User Two'
+            }
+        )
         create_cart(user2)
 
         res = self.client.get(CART_URL)
