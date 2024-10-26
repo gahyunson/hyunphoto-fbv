@@ -14,6 +14,8 @@ from cart.serializers import CartSerializer
 @authentication_classes([authentication.TokenAuthentication])
 @permission_classes([permissions.IsAuthenticated])
 def cart_list(request):
+    if not request.user:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
     cart = Cart.objects.filter(user=request.user)
     serializer = CartSerializer(cart, many=True)
     return Response(serializer.data, status.HTTP_200_OK)

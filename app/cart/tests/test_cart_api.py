@@ -85,12 +85,11 @@ class PrivateCartApiTests(TestCase):
     def test_cart_list_fail_unauthenticate(self):
         create_cart(self.user)
 
-        self.client.force_authenticate(user=None)
+        user2 = self.client.force_authenticate(user=None)
         res = self.client.get(CART_URL)
 
-        print(self.user)
+        cart = Cart.objects.filter(user=user2)
+        serializer = CartSerializer(cart, many=True)
 
-        # cart = Cart.objects.filter(user=self.user)
-        # serializer = CartSerializer(cart, many=True)
-
-        # print(res.data, serializer.data)
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertFalse(serializer.data)
