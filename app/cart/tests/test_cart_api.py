@@ -1,6 +1,4 @@
 """Tests for cart APIs."""
-from decimal import Decimal
-
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
@@ -8,20 +6,16 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Photos, Prices, User, Cart
+from core.models import Photos, Prices, Cart
 
-from user.serializers import UserSerializer
-from photos.serializers import (
-    PhotoSerializer,
-    PriceSerializer,
-)
 from cart.serializers import CartSerializer
 
-CART_RUL = reverse('cart:cart-list')
+CART_URL = reverse('cart:cart-list')
 
 
 def create_user(**params):
     return get_user_model().objects.create_user(**params)
+
 
 def create_photos(**params):
     """Create and return a photo sample data."""
@@ -35,6 +29,7 @@ def create_photos(**params):
 
     return photo
 
+
 def create_prices(photo, **params):
     price_sample = {
         'photo': photo,
@@ -45,6 +40,7 @@ def create_prices(photo, **params):
     price = Prices.objects.create(**price_sample)
 
     return price
+
 
 def create_cart(user, **params):
     """Create cart to my cart."""
@@ -61,6 +57,7 @@ def create_cart(user, **params):
 
     return cart
 
+
 class PrivateCartApiTests(TestCase):
     """Test cart API authenticated."""
     def setUp(self):
@@ -71,16 +68,28 @@ class PrivateCartApiTests(TestCase):
     def test_cart_list_success(self):
         create_cart(self.user)
         user2 = create_user(**{'email': 'user2@example.com',
-                             'password': 'user2123',
-                             'name': 'User Two'})
+                            'password': 'user2123',
+                            'name': 'User Two'})
         create_cart(user2)
 
-        res = self.client.get(CART_RUL)
+        res = self.client.get(CART_URL)
 
         cart = Cart.objects.filter(user=self.user)
         serializer = CartSerializer(cart, many=True)
-
-        print(res.data, serializer.data)
+        # print(res.data, serializer.data)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), len(serializer.data))
+
+    def test_cart_list_fail_unauthenticate(self):
+        create_cart(self.user)
+
+        self.client.force_authenticate(user=None)
+        res = self.client.get(CART_URL)
+
+        print(self.user)
+
+        # cart = Cart.objects.filter(user=self.user)
+        # serializer = CartSerializer(cart, many=True)
+
+        # print(res.data, serializer.data)

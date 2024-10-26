@@ -58,6 +58,7 @@ class Photos(models.Model):
     def __str__(self) -> str:
         return self.title
 
+
 class Prices(models.Model):
     """Price for each photo size."""
     photo = models.ForeignKey(Photos, on_delete=models.CASCADE)
@@ -75,4 +76,3 @@ class Cart(models.Model):
     photo = models.ForeignKey(Photos, on_delete=models.CASCADE)
     price = models.ForeignKey(Prices, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-

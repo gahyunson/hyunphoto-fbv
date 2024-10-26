@@ -71,9 +71,7 @@ class ModelTests(TestCase):
         )
         size = '20x16"'
         price = 88.0
-        prices = models.Prices.objects.create(
-            photo = photo,
-            size = size,
-            price = price,
-        )
+        prices = models.Prices.objects.create(photo = photo,
+                                              size = size,
+                                              price = price)
         self.assertEqual(prices.price, 88.0)

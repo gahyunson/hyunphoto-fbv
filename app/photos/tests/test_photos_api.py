@@ -1,6 +1,4 @@
 """Tests for photos APIs."""
-from decimal import Decimal
-
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -16,6 +14,7 @@ from photos import serializers
 
 
 PHOTOS_URL = reverse('photos:photos-list')
+
 
 def detail_url(photo_id):
     return reverse('photos:photo-detail', args=[photo_id])
@@ -33,6 +32,7 @@ def create_photos(**params):
     photo = Photos.objects.create(**sample)
     return photo
 
+
 def create_prices(photo, **params):
     price_sample = {
         'photo': photo,
@@ -43,6 +43,7 @@ def create_prices(photo, **params):
 
     price = Prices.objects.create(**price_sample)
     return price
+
 
 def create_superuser(**params):
     """Create and return a superuser."""
@@ -81,7 +82,3 @@ class PublicPhotoPriceApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(price1.photo, photo1)
-
-
-
-
