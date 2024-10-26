@@ -29,7 +29,8 @@ def signup(request):
 def create_token(request):
     serializer = AuthTokenSerializer(data=request.data)
     if serializer.is_valid():
-        token, created = Token.objects.get_or_create(user=serializer.validated_data['user'])
+        user_serial = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user_serial)
         return Response({'Token': token.key}, status.HTTP_201_CREATED)
     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 

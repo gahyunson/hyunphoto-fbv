@@ -129,8 +129,10 @@ class PrivateUserApiTests(TestCase):
         """Test retrieving user info who logged in."""
         res = self.client.get(PROFILE_URL)
 
+        check_user = {'name': self.user.name, 'email': self.user.email}
+
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, {'name': self.user.name, 'email': self.user.email})
+        self.assertEqual(res.data, check_user)
 
     def test_update_user_info_success(self):
         """Test update user info success."""
