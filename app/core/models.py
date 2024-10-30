@@ -76,3 +76,6 @@ class Cart(models.Model):
     photo = models.ForeignKey(Photos, on_delete=models.CASCADE)
     price = models.ForeignKey(Prices, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return str(self.id) + str(self.quantity)

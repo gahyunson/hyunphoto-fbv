@@ -10,10 +10,12 @@ from core.models import Photos, Prices, Cart
 
 from cart.serializers import CartSerializer
 
-CART_URL = reverse('cart:cart-list')
+CART_LIST_URL = reverse('cart:cart-list')
+# CART_DETAIL_URL = reverse('cart:cart-detail')
 
 
 def create_user(**params):
+    """Create and return a new user."""
     return get_user_model().objects.create_user(**params)
 
 
@@ -31,6 +33,7 @@ def create_photos(**params):
 
 
 def create_prices(photo, **params):
+    """Create and return a price of a photo."""
     price_sample = {
         'photo': photo,
         'size': '20x16"',
@@ -42,9 +45,8 @@ def create_prices(photo, **params):
     return price
 
 
-def create_cart(user, **params):
+def create_cart(user, photo, **params):
     """Create cart to my cart."""
-    photo = create_photos()
     price = create_prices(photo)
     defaults = {
         'user': user,
@@ -66,7 +68,9 @@ class PrivateCartApiTests(TestCase):
         self.client.force_authenticate(self.user)
 
     def test_cart_list_success(self):
-        create_cart(self.user)
+        """Successfully GET the authenticated user's cart list."""
+        photo = create_photos()
+        create_cart(self.user, photo)
         user2 = create_user(
             **{
                 'email': 'user2@example.com',
@@ -74,9 +78,9 @@ class PrivateCartApiTests(TestCase):
                 'name': 'User Two'
             }
         )
-        create_cart(user2)
+        create_cart(user2, photo)
 
-        res = self.client.get(CART_URL)
+        res = self.client.get(CART_LIST_URL)
 
         cart = Cart.objects.filter(user=self.user)
         serializer = CartSerializer(cart, many=True)
@@ -86,13 +90,31 @@ class PrivateCartApiTests(TestCase):
         self.assertEqual(len(res.data), len(serializer.data))
 
     def test_cart_list_fail_unauthenticate(self):
-        create_cart(self.user)
+        """Failed to GET the cart list unauthenticated. """
+        photo = create_photos()
+        create_cart(self.user, photo)
 
         user2 = self.client.force_authenticate(user=None)
-        res = self.client.get(CART_URL)
+        res = self.client.get(CART_LIST_URL)
 
         cart = Cart.objects.filter(user=user2)
         serializer = CartSerializer(cart, many=True)
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse(serializer.data)
+
+    def test_cart_quantity_partial_success(self):
+        """Successfully modified the quantity of each photo of cart."""
+        photo1 = create_photos()
+        cart1 = create_cart(self.user, photo1)
+
+        payload = {'cart_id': cart1.id, 'quantity': 3}
+
+        res = self.client.patch(CART_LIST_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        cart1.refresh_from_db()
+        self.assertEqual(cart1.user, self.user)
+        self.assertEqual(payload['quantity'], res.data['quantity'])
+
+
