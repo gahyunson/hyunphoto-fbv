@@ -6,9 +6,9 @@ from django.contrib.auth import get_user_model
 from core import models
 
 
-# def create_user(email='user@example.com', password='test123'):
-#     """Create and return a new user."""
-#     return get_user_model().objects.create_user(email, password)
+def create_user(email='user@example.com', password='test123'):
+    """Create and return a new user."""
+    return get_user_model().objects.create_user(email, password)
 
 
 class ModelTests(TestCase):
@@ -75,3 +75,26 @@ class ModelTests(TestCase):
                                               size=size,
                                               price=price)
         self.assertEqual(prices.price, 88.0)
+
+    def test_cart_create_successful(self):
+        """Test creating a cart is successful."""
+        photo = models.Photos.objects.create(
+            title='The night',
+            description='The night we used to rock.',
+            photo_path='static/thenight.png'
+        )
+        size = '20x16"'
+        price = 88.0
+        prices = models.Prices.objects.create(photo=photo,
+                                              size=size,
+                                              price=price)
+        user = create_user()
+        cart = models.Cart.objects.create(
+            user=user,
+            photo=photo,
+            price=prices,
+            quantity=1
+        )
+        self.assertEqual(cart.user, user)
+        self.assertEqual(cart.photo, photo)
+        self.assertEqual(cart.price.price, prices.price)
