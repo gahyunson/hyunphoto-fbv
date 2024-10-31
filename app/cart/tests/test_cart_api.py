@@ -127,3 +127,16 @@ class PrivateCartApiTests(TestCase):
         res = self.client.post(CART_LIST_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
+
+    def test_delete_cart_success(self):
+        """Successfully delete a cart."""
+        photo = create_photos()
+        price = create_prices(photo)
+        cart = create_cart(self.user, photo, price)
+
+        payload = {'cart_id': cart.id}
+
+        res = self.client.delete(CART_LIST_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(res.data)

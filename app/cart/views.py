@@ -19,7 +19,7 @@ def cart_list(request):
 
     if request.method == 'GET':
         cart = Cart.objects.filter(user=request.user)
-        serializer = CartSerializer(cart, many=True)
+        serializer = CartSerializer(user=request.user, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
     elif request.method == 'POST':
@@ -31,8 +31,8 @@ def cart_list(request):
 
     elif request.method == 'PATCH':
         cart_id = request.data.get('cart_id')
-        new_quantity = request.data.get('quantity')
         cart = Cart.objects.get(id=cart_id)
+        new_quantity = request.data.get('quantity')
 
         data = {'quantity': new_quantity}
         serializer = CartSerializer(cart, data=data, partial=True)
@@ -40,3 +40,11 @@ def cart_list(request):
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        cart_id = request.data.get('cart_id')
+        cart = Cart.objects.get(id=cart_id)
+
+        cart.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
