@@ -21,6 +21,14 @@ def cart_list(request):
         cart = Cart.objects.filter(user=request.user)
         serializer = CartSerializer(cart, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        serializer = CartSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     elif request.method == 'PATCH':
         cart_id = request.data.get('cart_id')
         new_quantity = request.data.get('quantity')
