@@ -127,5 +127,3 @@ class PrivateCartApiTests(TestCase):
         res = self.client.post(CART_LIST_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-
-

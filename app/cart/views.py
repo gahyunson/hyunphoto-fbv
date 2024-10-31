@@ -34,7 +34,8 @@ def cart_list(request):
         new_quantity = request.data.get('quantity')
         cart = Cart.objects.get(id=cart_id)
 
-        serializer = CartSerializer(cart, data={'quantity': new_quantity}, partial=True)
+        data = {'quantity': new_quantity}
+        serializer = CartSerializer(cart, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
