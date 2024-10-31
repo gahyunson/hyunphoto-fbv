@@ -19,7 +19,7 @@ def cart_list(request):
 
     if request.method == 'GET':
         cart = Cart.objects.filter(user=request.user)
-        serializer = CartSerializer(user=request.user, many=True)
+        serializer = CartSerializer(cart, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
 
     elif request.method == 'POST':
