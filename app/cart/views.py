@@ -27,7 +27,7 @@ def cart_list(request):
         if serializer.is_valid():
             serializer.save(user=request.user)
             return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'PATCH':
         cart_id = request.data.get('cart_id')
@@ -38,4 +38,4 @@ def cart_list(request):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)

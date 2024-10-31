@@ -47,7 +47,6 @@ def create_prices(photo, **params):
 
 def create_cart(user, photo, price, **params):
     """Create cart to my cart."""
-    # price = create_prices(photo)
     defaults = {
         'user': user,
         'photo': photo,
@@ -123,7 +122,7 @@ class PrivateCartApiTests(TestCase):
         """Successfully add my cart photo."""
         photo = create_photos()
         price = create_prices(photo)
-        payload = {'user': self.user, 'photo': photo, 'price': price}
+        payload = {'user': self.user.id, 'photo': photo.id, 'price': price.id}
 
         res = self.client.post(CART_LIST_URL, payload)
 
