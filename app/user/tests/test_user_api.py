@@ -4,6 +4,12 @@ from django.urls import reverse
 
 from rest_framework.test import APIClient
 from rest_framework import status
+from drf_spectacular.utils import (
+    extend_schema_view,
+    extend_schema,
+    OpenApiParameter,
+    OpenApiTypes,
+)
 
 
 SIGNUP_USER_URL = reverse('user:signup')

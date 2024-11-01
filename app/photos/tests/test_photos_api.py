@@ -84,6 +84,7 @@ class PublicPhotoPriceApiTests(TestCase):
         self.assertEqual(price1.photo, photo1)
 
     def test_photo_detail(self):
+        """Test getting photo detail."""
         photo = create_photos()
         price1 = create_prices(photo)
 

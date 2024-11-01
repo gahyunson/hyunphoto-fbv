@@ -1,12 +1,11 @@
-# from django.contrib.auth import get_user_model, authenticate
-
 from rest_framework import status, authentication, permissions
 from rest_framework.authtoken.models import Token
-# from rest_framework.settings import api_settings
+from rest_framework.settings import api_settings
 from rest_framework.decorators import (
     api_view,
     authentication_classes,
     permission_classes,
+    renderer_classes,
 )
 from rest_framework.response import Response
 
@@ -24,14 +23,15 @@ def signup(request):
         return Response(serializer.data, status.HTTP_201_CREATED)
     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['POST'])
+@renderer_classes(api_settings.DEFAULT_RENDERER_CLASSES)
 def create_token(request):
     serializer = AuthTokenSerializer(data=request.data)
     if serializer.is_valid():
         user_serial = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user_serial)
         return Response({'Token': token.key}, status.HTTP_201_CREATED)
+
     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 

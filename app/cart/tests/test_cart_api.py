@@ -10,8 +10,7 @@ from core.models import Photos, Prices, Cart
 
 from cart.serializers import CartSerializer
 
-CART_LIST_URL = reverse('cart:cart-list')
-# CART_DETAIL_URL = reverse('cart:cart-detail')
+CART_URL = reverse('cart:cart')
 
 
 def create_user(**params):
@@ -80,7 +79,7 @@ class PrivateCartApiTests(TestCase):
         )
         create_cart(user2, photo, price)
 
-        res = self.client.get(CART_LIST_URL)
+        res = self.client.get(CART_URL)
 
         cart = Cart.objects.filter(user=self.user)
         serializer = CartSerializer(cart, many=True)
@@ -95,7 +94,7 @@ class PrivateCartApiTests(TestCase):
         create_cart(self.user, photo, price)
 
         user2 = self.client.force_authenticate(user=None)
-        res = self.client.get(CART_LIST_URL)
+        res = self.client.get(CART_URL)
 
         cart = Cart.objects.filter(user=user2)
         serializer = CartSerializer(cart, many=True)
@@ -111,7 +110,7 @@ class PrivateCartApiTests(TestCase):
 
         payload = {'cart_id': cart1.id, 'quantity': 3}
 
-        res = self.client.patch(CART_LIST_URL, payload)
+        res = self.client.patch(CART_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         cart1.refresh_from_db()
@@ -124,7 +123,7 @@ class PrivateCartApiTests(TestCase):
         price = create_prices(photo)
         payload = {'user': self.user.id, 'photo': photo.id, 'price': price.id}
 
-        res = self.client.post(CART_LIST_URL, payload)
+        res = self.client.post(CART_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
@@ -136,7 +135,7 @@ class PrivateCartApiTests(TestCase):
 
         payload = {'cart_id': cart.id}
 
-        res = self.client.delete(CART_LIST_URL, payload)
+        res = self.client.delete(CART_URL, payload)
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(res.data)
