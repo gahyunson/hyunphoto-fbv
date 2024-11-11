@@ -25,6 +25,8 @@ def photo_detail(request, photo_id):
         serializer = serializers.PhotoDetailSerializer(photo)
         if serializer.is_valid():
             return Response(serializer.data, status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Photos.DoesNotExist:
         return Response(serializer.errors, status.HTTP_404_NOT_FOUND)
     except Exception:
