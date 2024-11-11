@@ -51,7 +51,8 @@ class Photos(models.Model):
     """Photo object."""
     title = models.CharField(max_length=100, null=False)
     description = models.TextField(max_length=1024)
-    photo_path = models.CharField(max_length=200, null=False, blank=False)
+    image = models.ImageField(upload_to='images/')
+    # photo_path = models.CharField(max_length=200, null=False, blank=False)
     updated_at = models.DateTimeField(auto_now=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
