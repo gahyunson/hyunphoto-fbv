@@ -11,7 +11,8 @@ def photo_list(request):
     try:
         photos = Photos.objects.all()
         serializer = serializers.PhotoSerializer(photos, many=True)
-        return Response(serializer.data, status.HTTP_200_OK)
+        if serializer.is_valid():
+            return Response(serializer.data, status.HTTP_200_OK)
     except Photos.DoesNotExist:
         return Response(serializer.errors, status.HTTP_404_NOT_FOUND)
     except Exception:
