@@ -23,7 +23,7 @@ def photo_list(request):
 def photo_detail(request, photo_id):
     try:
         photo = Photos.objects.get(id=photo_id)
-        serializer = serializers.PhotoDetailSerializer(photo)
+        serializer = serializers.PhotoDetailSerializer(data=photo)
         if serializer.is_valid():
             return Response(serializer.data, status.HTTP_200_OK)
         else:
