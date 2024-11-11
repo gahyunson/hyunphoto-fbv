@@ -5,6 +5,8 @@ from django.contrib.auth import get_user_model
 
 from core import models
 
+import tempfile
+
 
 def create_user(email='user@example.com', password='test123'):
     """Create and return a new user."""
@@ -54,11 +56,11 @@ class ModelTests(TestCase):
         """Test creating a photo is successful."""
         title = 'The night'
         description = 'The night we used to rock.'
-        photo_path = 'static/thenight.png'
+        image = tempfile.NamedTemporaryFile(suffix=".jpg").name
         photos = models.Photos.objects.create(
             title=title,
             description=description,
-            photo_path=photo_path
+            image=image
         )
         self.assertEqual(str(photos), title)
 
@@ -67,7 +69,7 @@ class ModelTests(TestCase):
         photo = models.Photos.objects.create(
             title='The night',
             description='The night we used to rock.',
-            photo_path='static/thenight.png'
+            image=tempfile.NamedTemporaryFile(suffix=".jpg").name
         )
         size = '20x16"'
         price = 88.0
@@ -81,7 +83,7 @@ class ModelTests(TestCase):
         photo = models.Photos.objects.create(
             title='The night',
             description='The night we used to rock.',
-            photo_path='static/thenight.png'
+            image=tempfile.NamedTemporaryFile(suffix=".jpg").name
         )
         size = '20x16"'
         price = 88.0

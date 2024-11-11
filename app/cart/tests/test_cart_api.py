@@ -10,6 +10,8 @@ from core.models import Photos, Prices, Cart
 
 from cart.serializers import CartSerializer
 
+import tempfile
+
 CART_URL = reverse('cart:cart')
 
 
@@ -23,7 +25,7 @@ def create_photos(**params):
     sample = {
         'title': 'The night',
         'description': 'The night we used to rock.',
-        'photo_path': 'static/thenight.png'
+        'image': tempfile.NamedTemporaryFile(suffix=".jpg").name
     }
     sample.update(params)
     photo = Photos.objects.create(**sample)

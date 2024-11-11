@@ -8,28 +8,38 @@ from photos import serializers
 
 @api_view(['GET'])
 def photo_list(request):
-    try:
-        photos = Photos.objects.all()
-        serializer = serializers.PhotoSerializer(photos, many=True)
-        if serializer.is_valid():
-            return Response(serializer.data, status.HTTP_200_OK)
-    except Photos.DoesNotExist:
-        return Response(serializer.errors, status.HTTP_404_NOT_FOUND)
-    except Exception:
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    photos = Photos.objects.all()
+    serializer = serializers.PhotoSerializer(photos, many=True)
+    if serializer.is_valid():
+        return Response(serializer.data, status.HTTP_200_OK)
+    return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    # try:
+    #     photos = Photos.objects.all()
+    #     serializer = serializers.PhotoSerializer(photos, many=True)
+    #     if serializer.is_valid():
+    #         return Response(serializer.data, status.HTTP_200_OK)
+    # except Photos.DoesNotExist:
+    #     return Response(serializer.errors, status.HTTP_404_NOT_FOUND)
+    # except Exception:
+    #     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 def photo_detail(request, photo_id):
-    try:
-        photo = Photos.objects.get(id=photo_id)
-        serializer = serializers.PhotoDetailSerializer(data=photo)
-        if serializer.is_valid():
-            return Response(serializer.data, status.HTTP_200_OK)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    except Photos.DoesNotExist:
-        return Response(serializer.errors, status.HTTP_404_NOT_FOUND)
-    except Exception:
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+    photo = Photos.objects.get(id=photo_id)
+    serializer = serializers.PhotoDetailSerializer(data=photo)
+    if serializer.is_valid():
+        return Response(serializer.data, status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # try:
+    #     photo = Photos.objects.get(id=photo_id)
+    #     serializer = serializers.PhotoDetailSerializer(data=photo)
+    #     if serializer.is_valid():
+    #         return Response(serializer.data, status.HTTP_200_OK)
+    #     else:
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # except Photos.DoesNotExist:
+    #     return Response(serializer.errors, status.HTTP_404_NOT_FOUND)
+    # except Exception:
+    #     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
