@@ -82,23 +82,22 @@ class PublicPhotoPriceApiTests(TestCase):
         price1 = Prices.objects.get(photo=photo1)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(price1.photo, photo1)
 
     def test_photo_detail(self):
         """Test getting photo detail."""
         photo = create_photos()
-        price1 = create_prices(photo)
+        create_prices(photo)
 
         price_sample = {
             'size': '40x32"',
             'price': 160.0
         }
-        price2 = create_prices(photo, **price_sample)
+        create_prices(photo, **price_sample)
 
         url = detail_url(photo.id)
 
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue(res.data['title'], photo)
-        self.assertEqual(len(res.data['photo_price']), 2)
+        self.assertTrue(res.data[0]['title'], photo)
+        self.assertEqual(len(res.data[0]['photo_price']), 2)

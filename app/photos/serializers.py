@@ -12,7 +12,7 @@ class PriceSerializer(serializers.ModelSerializer):
 class PhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Photos
-        fields = ['id', 'title', 'photo_path']
+        fields = ['id', 'title', 'image']
 
 
 class PhotoDetailSerializer(PhotoSerializer):
