@@ -28,4 +28,3 @@ def photo_detail(request, photo_id):
         return Response(serializer.errors, status.HTTP_404_NOT_FOUND)
     except Exception:
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-
