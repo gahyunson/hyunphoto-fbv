@@ -79,8 +79,6 @@ class PublicPhotoPriceApiTests(TestCase):
         url = detail_url(photo1.id)
         res = self.client.get(url)
 
-        price1 = Prices.objects.get(photo=photo1)
-
         self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_photo_detail(self):

@@ -23,6 +23,7 @@ def signup(request):
         return Response(serializer.data, status.HTTP_201_CREATED)
     return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST'])
 @renderer_classes(api_settings.DEFAULT_RENDERER_CLASSES)
 def create_token(request):

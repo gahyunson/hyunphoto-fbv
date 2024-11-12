@@ -20,7 +20,3 @@ class PhotoDetailSerializer(PhotoSerializer):
 
     class Meta(PhotoSerializer.Meta):
         fields = PhotoSerializer.Meta.fields + ['description', 'photo_price']
-
-
-
-
