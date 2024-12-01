@@ -104,6 +104,16 @@ class PrivateCartApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertFalse(serializer.data)
 
+    def test_create_cart_success(self):
+        """Successfully add my cart photo."""
+        photo = create_photos()
+        price = create_prices(photo)
+        payload = {'user': self.user.id, 'photo': photo.id, 'price': price.id}
+
+        res = self.client.post(CART_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+
     def test_cart_quantity_partial_success(self):
         """Successfully modified the quantity of each photo of cart."""
         photo1 = create_photos()
@@ -118,16 +128,6 @@ class PrivateCartApiTests(TestCase):
         cart1.refresh_from_db()
         self.assertEqual(cart1.user, self.user)
         self.assertEqual(payload['quantity'], res.data['quantity'])
-
-    def test_create_cart_success(self):
-        """Successfully add my cart photo."""
-        photo = create_photos()
-        price = create_prices(photo)
-        payload = {'user': self.user.id, 'photo': photo.id, 'price': price.id}
-
-        res = self.client.post(CART_URL, payload)
-
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
 
     def test_delete_cart_success(self):
         """Successfully delete a cart."""
